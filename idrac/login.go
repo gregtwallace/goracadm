@@ -3,7 +3,6 @@ package idrac
 import (
 	"bytes"
 	"encoding/xml"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -24,12 +23,12 @@ type loginPayload struct {
 type LoginResponse struct {
 	XMLName  xml.Name `xml:"LOGIN"`
 	Response struct {
-		XMLName           xml.Name `xml:"RESP"`
-		ReturnCode        string   `xml:"RC"`
-		SessionID         string   `xml:"SID"`
-		State             string   `xml:"STATE"`
-		StateName         string   `xml:"STATENAME"`
-		DefaultCredential string   `xml:"DEFCRED"`
+		XMLName           xml.Name   `xml:"RESP"`
+		ReturnCode        ReturnCode `xml:"RC"`
+		SessionID         string     `xml:"SID"`
+		State             string     `xml:"STATE"`
+		StateName         string     `xml:"STATENAME"`
+		DefaultCredential string     `xml:"DEFCRED"`
 	}
 }
 
@@ -63,11 +62,8 @@ func (rac *idrac) Login() (loginResp LoginResponse, err error) {
 	}
 
 	// verify login success
-	if loginResp.Response.ReturnCode != "0x0" ||
-		loginResp.Response.SessionID == "" ||
-		loginResp.Response.State != "0x00000001" {
-
-		return LoginResponse{}, fmt.Errorf("login failed (state: %s)", loginResp.Response.StateName)
+	if loginResp.Response.ReturnCode != RcOK {
+		return LoginResponse{}, loginResp.Response.ReturnCode
 	}
 
 	// save login cookie to jar
