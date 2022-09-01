@@ -32,19 +32,19 @@ func main() {
 	// login to idrac and save the sid cookie
 	_, err = rac.Login()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("login error: %s", err)
 	}
 
 	// execute the subcommand
 	_, err = rac.Exec()
 	if err != nil {
 		// not fatal, continue to logout
-		log.Printf("execution error: %s", err)
+		log.Printf("exec error: %s", err)
 	}
 
 	// logout of the idrac
 	_, err = rac.Logout()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("logout error: %s", err)
 	}
 }
