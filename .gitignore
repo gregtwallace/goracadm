@@ -1,0 +1,8 @@
+# testing scripts
+*.ps1
+
+# testing products
+*.pem
+
+# packet captures used to build the tool
+packet_captures/
