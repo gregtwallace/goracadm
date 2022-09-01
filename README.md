@@ -10,6 +10,8 @@ The idrac package can also be imported into other Go programs if
 interfacing with an idrac is needed, as opposed to a racadm
 reimplementation.
 
+Disclaimer: I only have idrac 6 & 7 to test with.
+
 ## Implemented (so far)
 Subcommands:
 sslcertdownload
