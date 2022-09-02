@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"errors"
+	"flag"
 	"io"
 )
 
@@ -97,4 +98,17 @@ func (rac *idrac) executePayload(payload execPayload) (execResp execResponse, er
 
 	// success
 	return execResp, nil
+}
+
+// parseFlags parses the flag set and returns an error if there are
+// any extraneous / leftover bits after the flags are parsed.
+func parseFlags(fs *flag.FlagSet, flags []string) (err error) {
+	fs.Parse(flags)
+
+	// check for leftovers
+	if len(fs.Args()) > 0 {
+		return errInvalidOrMalpositioned
+	}
+
+	return nil
 }

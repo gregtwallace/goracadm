@@ -22,11 +22,10 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 	fs.IntVar(&certType, "t", 0, "certificate type (required - int - see Dell docs)")
 	fs.IntVar(&instance, "i", 0, "instance (1 or 2) (optional)")
 
-	fs.Parse(flags)
-
-	// check for leftovers
-	if len(fs.Args()) > 0 {
-		return execResponse{}, errInvalidOrMalpositioned
+	// parse and check for basic errors
+	err = parseFlags(fs, flags)
+	if err != nil {
+		return execResponse{}, err
 	}
 
 	// validate command flags

@@ -39,11 +39,10 @@ func (rac *idrac) racreset(flags []string) (execResp execResponse, err error) {
 	fs.BoolVar(&force, "f", false, "This option is used to force the reset.")
 	fs.StringVar(&module, "m", "", "server-<n> — where n=1-16	-or- server-<nx> — where n=1-8; x = a, b, c, d (lower case)")
 
-	fs.Parse(flags)
-
-	// check for leftovers
-	if len(fs.Args()) > 0 {
-		return execResponse{}, errInvalidOrMalpositioned
+	// parse and check for basic errors
+	err = parseFlags(fs, flags)
+	if err != nil {
+		return execResponse{}, err
 	}
 
 	// validate command flags and build command
