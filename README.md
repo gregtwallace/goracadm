@@ -13,5 +13,4 @@ reimplementation.
 Disclaimer: I only have idrac 6 & 7 to test with.
 
 ## Implemented (so far)
-Subcommands:
-sslcertdownload
+Subcommands: sslcertdownload, racreset

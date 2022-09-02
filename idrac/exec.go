@@ -1,14 +1,17 @@
 package idrac
 
 import (
+	"bytes"
 	"encoding/xml"
 	"errors"
+	"io"
 )
 
 const endpointExec = "/cgi-bin/exec"
 
 var (
-	errInvalidSubCommand = errors.New("subcommand is either invalid or not implemented")
+	errInvalidSubCommand      = errors.New("subcommand is either invalid or not implemented")
+	errInvalidOrMalpositioned = errors.New("invalid or malpositioned param or flag")
 )
 
 // execPayload is the payload to execute on idrac
@@ -45,6 +48,8 @@ func (rac *idrac) Exec(command string, flags []string) (execResp execResponse, e
 	switch command {
 	case "sslcertdownload":
 		execResp, err = rac.sslcertdownload(flags)
+	case "racreset":
+		execResp, err = rac.racreset(flags)
 	default:
 		// error, unsupported
 		return execResponse{}, errInvalidSubCommand
@@ -54,4 +59,42 @@ func (rac *idrac) Exec(command string, flags []string) (execResp execResponse, e
 	// log.Println(execResp)
 
 	return execResp, err
+}
+
+// executePayload executes the specified payload against
+// the idrac and returns the response or an error.
+func (rac *idrac) executePayload(payload execPayload) (execResp execResponse, err error) {
+	// marshal payload
+	payloadXml, err := xml.Marshal(payload)
+	if err != nil {
+		return execResponse{}, err
+	}
+
+	// post
+	resp, err := rac.client.Post(rac.url()+endpointExec, "application/xml", bytes.NewBuffer(payloadXml))
+	if err != nil {
+		return execResponse{}, err
+	}
+
+	// read and unmarshal body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return execResponse{}, err
+	}
+
+	err = xml.Unmarshal(body, &execResp)
+	if err != nil {
+		return execResponse{}, err
+	}
+
+	// check return codes for errors
+	if execResp.Response.ReturnCode != RcOK {
+		return execResponse{}, execResp.Response.ReturnCode
+	}
+	if execResp.Response.CommandReturnCode != RcOK {
+		return execResponse{}, execResp.Response.CommandReturnCode
+	}
+
+	// success
+	return execResp, nil
 }

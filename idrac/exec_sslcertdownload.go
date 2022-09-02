@@ -1,12 +1,9 @@
 package idrac
 
 import (
-	"bytes"
-	"encoding/xml"
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 )
@@ -15,7 +12,7 @@ import (
 // the specified flags.
 // https://www.dell.com/support/manuals/en-us/oth-r6415/idrac9_5.xx_racadm_pub/sslcertdownload?guid=guid-33c6a0ac-ee43-4bb6-9413-1e83e359144a&lang=en-us
 func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err error) {
-	// parse flags for sslcertdownload command
+	// parse command flags (options)
 	filename := ""
 	certType := 0
 	instance := 0
@@ -27,12 +24,17 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 
 	fs.Parse(flags)
 
+	// check for leftovers
+	if len(fs.Args()) > 0 {
+		return execResponse{}, errInvalidOrMalpositioned
+	}
+
 	// validate command flags
 	if filename == "" {
-		return execResponse{}, errors.New("sslcertdownload: filename (f) must be specified")
+		return execResponse{}, errors.New("sslcertdownload: filename (-f) must be specified")
 	}
 	if certType == 0 {
-		return execResponse{}, errors.New("sslcertdownload: cert type (t) must be specified")
+		return execResponse{}, errors.New("sslcertdownload: cert type (-t) must be specified")
 	}
 	if certType < 1 || certType > 11 {
 		return execResponse{}, errors.New("sslcertdownload: cert type must be between 1 and 11, inclusive")
@@ -67,35 +69,10 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 	payload.Request.Capability = "0x1"
 	payload.Request.UserPrivilege = 0
 
-	// marshal payload
-	payloadXml, err := xml.Marshal(payload)
+	// execute payload
+	execResp, err = rac.executePayload(payload)
 	if err != nil {
 		return execResponse{}, err
-	}
-
-	// post
-	resp, err := rac.client.Post(rac.url()+endpointExec, "application/xml", bytes.NewBuffer(payloadXml))
-	if err != nil {
-		return execResponse{}, err
-	}
-
-	// read and unmarshal body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return execResponse{}, err
-	}
-
-	err = xml.Unmarshal(body, &execResp)
-	if err != nil {
-		return execResponse{}, err
-	}
-
-	// check return codes for errors
-	if execResp.Response.ReturnCode != RcOK {
-		return execResponse{}, execResp.Response.ReturnCode
-	}
-	if execResp.Response.CommandReturnCode != RcOK {
-		return execResponse{}, execResp.Response.CommandReturnCode
 	}
 
 	// save certificate to specified file
@@ -110,7 +87,7 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 		return execResponse{}, err
 	}
 
-	log.Println("certificate successfully download from the RAC")
+	log.Println("certificate successfully download from the rac")
 
 	return execResp, nil
 }
