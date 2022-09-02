@@ -35,8 +35,12 @@ func main() {
 		log.Fatalf("login error: %s", err)
 	}
 
+	// get subcommand and flags
+	cmd := flag.Args()[0]
+	flags := flag.Args()[1:]
+
 	// execute the subcommand
-	_, err = rac.Exec()
+	_, err = rac.Exec(cmd, flags)
 	if err != nil {
 		// not fatal, continue to logout
 		log.Printf("exec error: %s", err)

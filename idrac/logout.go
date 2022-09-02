@@ -2,7 +2,6 @@ package idrac
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
 )
 
@@ -11,9 +10,9 @@ const endpointLogout = "/cgi-bin/logout"
 type LogoutResponse struct {
 	XMLName  xml.Name `xml:"LOGOUT"`
 	Response struct {
-		XMLName    xml.Name `xml:"RESP"`
-		ReturnCode string   `xml:"RC"`
-		SessionID  string   `xml:"SID"`
+		XMLName    xml.Name   `xml:"RESP"`
+		ReturnCode ReturnCode `xml:"RC"`
+		SessionID  string     `xml:"SID"`
 	}
 }
 
@@ -37,8 +36,8 @@ func (rac *idrac) Logout() (logoutResp LogoutResponse, err error) {
 	}
 
 	// verify logout success
-	if logoutResp.Response.ReturnCode != "0x0" {
-		return LogoutResponse{}, fmt.Errorf("logout failed (code: %s)", logoutResp.Response.ReturnCode)
+	if logoutResp.Response.ReturnCode != RcOK {
+		return LogoutResponse{}, logoutResp.Response.ReturnCode
 	}
 
 	return logoutResp, nil
