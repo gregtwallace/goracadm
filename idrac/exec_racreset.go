@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -117,9 +116,6 @@ func (rac *idrac) racreset(flags []string) (execResp execResponse, err error) {
 	if err != nil {
 		return execResponse{}, err
 	}
-
-	// success
-	log.Println(execResp.Response.CommandOutput)
 
 	return execResp, nil
 }

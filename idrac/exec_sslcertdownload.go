@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -30,13 +29,13 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 
 	// validate command flags
 	if filename == "" {
-		return execResponse{}, errors.New("sslcertdownload: filename (-f) must be specified")
+		return execResponse{}, errors.New("filename (-f) must be specified")
 	}
 	if certType == 0 {
-		return execResponse{}, errors.New("sslcertdownload: cert type (-t) must be specified")
+		return execResponse{}, errors.New("cert type (-t) must be specified")
 	}
 	if certType < 1 || certType > 11 {
-		return execResponse{}, errors.New("sslcertdownload: cert type must be between 1 and 11, inclusive")
+		return execResponse{}, errors.New("cert type must be between 1 and 11, inclusive")
 	}
 
 	// confirm file doesn't already exist
@@ -56,7 +55,7 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 		instanceParam = fmt.Sprintf(" -i %d", instance)
 	} else {
 		// error, invalid -i
-		return execResponse{}, errors.New("sslcertdownload: instance must be 1 or 2, if specified")
+		return execResponse{}, errors.New("instance must be 1 or 2, if specified")
 	}
 
 	// build payload to post to drac
@@ -85,8 +84,6 @@ func (rac *idrac) sslcertdownload(flags []string) (execResp execResponse, err er
 	if err != nil {
 		return execResponse{}, err
 	}
-
-	log.Println("certificate successfully download from the rac")
 
 	return execResp, nil
 }

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"log"
 )
 
 const endpointExec = "/cgi-bin/exec"
@@ -96,7 +97,9 @@ func (rac *idrac) executePayload(payload execPayload) (execResp execResponse, er
 		return execResponse{}, execResp.Response.CommandReturnCode
 	}
 
-	// success
+	// success - write command output
+	log.Println(execResp.Response.CommandOutput)
+
 	return execResp, nil
 }
 
