@@ -58,6 +58,8 @@ func (rac *idrac) Exec(command string, flags []string) (execResp execResponse, e
 		execResp, err = rac.sslcertupload(flags)
 	case "sslkeyupload":
 		execResp, err = rac.sslkeyupload(flags)
+	case "sslresetcfg":
+		execResp, err = rac.sslresetcfg(flags)
 	default:
 		// error, unsupported
 		return execResponse{}, errInvalidSubCommand
