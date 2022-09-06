@@ -7,7 +7,11 @@ import (
 	"github.com/gregtwallace/goracadm/idrac"
 )
 
+const version = "0.1.0"
+
 func main() {
+	log.Printf("goracadm v.%s", version)
+
 	// config options
 	hostname := ""
 	username := ""
