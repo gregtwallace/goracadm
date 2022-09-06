@@ -17,8 +17,8 @@ func (rac *idrac) sslkeyupload(flags []string) (execResp execResponse, err error
 	filename := ""
 	certType := 0
 
-	fs := flag.NewFlagSet("sslcertdownload", flag.ExitOnError)
-	fs.StringVar(&filename, "f", "", "filename to save the cert locally (required)")
+	fs := flag.NewFlagSet("sslkeyupload", flag.ExitOnError)
+	fs.StringVar(&filename, "f", "", "local filename to upload (required)")
 	fs.IntVar(&certType, "t", 0, "certificate type (required) (only 1 is valid)")
 
 	// parse and check for basic errors
@@ -54,7 +54,7 @@ func (rac *idrac) sslkeyupload(flags []string) (execResp execResponse, err error
 	}
 	// validation done
 
-	// file put put payload
+	// file put payload
 	filePayload := putfilePayload{
 		filename: "RACSSLCERT1",
 		flags:    0,
