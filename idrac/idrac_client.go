@@ -21,8 +21,8 @@ type idracClient struct {
 // specifies timeout options so the client behaves sanely.
 func newIdracClient(strictCerts bool) (client *idracClient, err error) {
 	// make default timeouts
-	tlsTimeout := 5 * time.Second
-	clientTimeout := 10 * time.Second
+	tlsTimeout := 60 * time.Second
+	clientTimeout := 60 * time.Second
 
 	// make transport based ignoreCertErrors
 	transport := &http.Transport{}
