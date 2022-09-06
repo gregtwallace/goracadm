@@ -11,9 +11,9 @@ type idrac struct {
 }
 
 // NewIdrac creates an Idrac and client to access it
-func NewIdrac(hostname, username, password string) *idrac {
+func NewIdrac(hostname, username, password string, strictCerts bool) *idrac {
 	// make http client for idrac
-	idracClient, err := newIdracClient()
+	idracClient, err := newIdracClient(strictCerts)
 	if err != nil {
 		log.Fatal(err)
 	}

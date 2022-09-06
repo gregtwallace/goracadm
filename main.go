@@ -20,16 +20,18 @@ func main() {
 	hostname := ""
 	username := ""
 	password := ""
+	strictCerts := false
 
 	// parse command line
 	flag.StringVar(&hostname, "r", "", "idrac hostname or ip address (and port)")
 	flag.StringVar(&username, "u", "", "idrac username")
 	flag.StringVar(&password, "p", "", "idrac password")
+	flag.BoolVar(&strictCerts, "S", false, "strictly require validated certs")
 
 	flag.Parse()
 
 	// make idrac
-	rac := idrac.NewIdrac(hostname, username, password)
+	rac := idrac.NewIdrac(hostname, username, password, strictCerts)
 
 	// do discover (confirm hostname is actually an idrac)
 	_, err := rac.Discover()

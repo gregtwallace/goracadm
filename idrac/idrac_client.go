@@ -1,6 +1,7 @@
 package idrac
 
 import (
+	"crypto/tls"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
@@ -18,17 +19,24 @@ type idracClient struct {
 
 // New creates a new http client using the custom struct. It also
 // specifies timeout options so the client behaves sanely.
-func newIdracClient() (client *idracClient, err error) {
+func newIdracClient(strictCerts bool) (client *idracClient, err error) {
 	// make default timeouts
 	tlsTimeout := 5 * time.Second
 	clientTimeout := 10 * time.Second
 
-	// make transport with AIA support (many (all?) idracs do not
-	// supply intermediate cert and linux does not perform AIA by
-	// default)
-	transport, err := aia.NewTransport()
-	if err != nil {
-		return nil, err
+	// make transport based ignoreCertErrors
+	transport := &http.Transport{}
+	if strictCerts {
+		// make transport with AIA support (many (all?) idracs do not
+		// supply intermediate cert and linux does not perform AIA by
+		// default)
+		transport, err = aia.NewTransport()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		// not strict
+		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	// configure transport
