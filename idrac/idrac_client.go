@@ -2,10 +2,11 @@ package idrac
 
 import (
 	"io"
-	"net"
 	"net/http"
 	"net/http/cookiejar"
 	"time"
+
+	"github.com/fcjr/aia-transport-go"
 )
 
 // idracClient is a custom http.Client designed to interface
@@ -19,20 +20,22 @@ type idracClient struct {
 // specifies timeout options so the client behaves sanely.
 func newIdracClient() (client *idracClient, err error) {
 	// make default timeouts
-	dialTimeout := 5 * time.Second
 	tlsTimeout := 5 * time.Second
 	clientTimeout := 10 * time.Second
 
-	// configure transport
-	transport := &http.Transport{
-		Dial: (&net.Dialer{
-			Timeout: dialTimeout,
-		}).Dial,
-		TLSHandshakeTimeout: tlsTimeout,
-		// default connections per host
-		MaxConnsPerHost:     2,
-		MaxIdleConnsPerHost: 2,
+	// make transport with AIA support (many (all?) idracs do not
+	// supply intermediate cert and linux does not perform AIA by
+	// default)
+	transport, err := aia.NewTransport()
+	if err != nil {
+		return nil, err
 	}
+
+	// configure transport
+	transport.TLSHandshakeTimeout = tlsTimeout
+	// default connections per host
+	transport.MaxConnsPerHost = 2
+	transport.MaxIdleConnsPerHost = 2
 
 	// create *Client
 	client = new(idracClient)
