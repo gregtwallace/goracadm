@@ -54,6 +54,8 @@ func (rac *idrac) Exec(command string, flags []string) (execResp execResponse, e
 		execResp, err = rac.racreset(flags)
 	case "sslcertdownload":
 		execResp, err = rac.sslcertdownload(flags)
+	case "sslcertupload":
+		execResp, err = rac.sslcertupload(flags)
 	case "sslkeyupload":
 		execResp, err = rac.sslkeyupload(flags)
 	default:
