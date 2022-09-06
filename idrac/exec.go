@@ -46,12 +46,16 @@ type execResponse struct {
 // not been specifically implemented and tested.
 func (rac *idrac) Exec(command string, flags []string) (execResp execResponse, err error) {
 	// check subcommand is implemented and parse flags accordingly
-	// subcommands: https://www.dell.com/support/manuals/en-us/idrac9-lifecycle-controller-v5.x-series/idrac9_5.xx_racadm_pub/racadm-subcommand-details?guid=guid-3e09aba8-6e2c-4fd9-9a17-d05f2596dbac&lang=en-us
+	// subcommands:
+	// https://www.dell.com/support/manuals/en-us/poweredge-m630/idrac8_2.70.70.70_racadm/racadm-subcommand-details?guid=guid-cd4e81e6-818c-44fb-9e7a-82950425fbbb&lang=en-us
+	// https://www.dell.com/support/manuals/en-us/idrac9-lifecycle-controller-v5.x-series/idrac9_5.xx_racadm_pub/racadm-subcommand-details?guid=guid-3e09aba8-6e2c-4fd9-9a17-d05f2596dbac&lang=en-us
 	switch command {
-	case "sslcertdownload":
-		execResp, err = rac.sslcertdownload(flags)
 	case "racreset":
 		execResp, err = rac.racreset(flags)
+	case "sslcertdownload":
+		execResp, err = rac.sslcertdownload(flags)
+	case "sslkeyupload":
+		execResp, err = rac.sslkeyupload(flags)
 	default:
 		// error, unsupported
 		return execResponse{}, errInvalidSubCommand
