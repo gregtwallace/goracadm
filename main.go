@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 
 	"github.com/gregtwallace/goracadm/idrac"
 )
@@ -11,6 +12,9 @@ const version = "0.1.0"
 
 func main() {
 	log.Printf("goracadm v.%s", version)
+
+	// exit code
+	exitCode := 0
 
 	// config options
 	hostname := ""
@@ -46,13 +50,19 @@ func main() {
 	// execute the subcommand
 	_, err = rac.Exec(cmd, flags)
 	if err != nil {
-		// not fatal, continue to logout
+		// not fatal, continue to logout and change exit code to error
 		log.Printf("exec error: %s", err)
+		exitCode = 1
 	}
 
 	// logout of the idrac
 	_, err = rac.Logout()
 	if err != nil {
-		log.Fatalf("logout error: %s", err)
+		// not fatal, nor change exit code (could result from things like
+		// success of racreset)
+		log.Printf("logout error: %s", err)
 	}
+
+	// exit with appropriate code
+	os.Exit(exitCode)
 }
