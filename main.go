@@ -66,5 +66,6 @@ func main() {
 	}
 
 	// exit with appropriate code
+	log.Printf("goracadm exit code: %d", exitCode)
 	os.Exit(exitCode)
 }
