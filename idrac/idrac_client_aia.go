@@ -19,6 +19,7 @@ import (
 // for incomplete certificate chains.
 func newIdracAiaTransport(strictCerts bool) (*http.Transport, error) {
 	// defaults
+	dialerTimeout := 10 * time.Second
 	tlsTimeout := 60 * time.Second
 	maxConns := 2
 	maxIdleConns := 2
@@ -35,7 +36,8 @@ func newIdracAiaTransport(strictCerts bool) (*http.Transport, error) {
 			RootCAs: rootCAs,
 		},
 		DialTLS: func(network, addr string) (net.Conn, error) {
-			return tls.Dial(network, addr, &tls.Config{
+			dialer := net.Dialer{Timeout: dialerTimeout}
+			return tls.DialWithDialer(&dialer, network, addr, &tls.Config{
 				InsecureSkipVerify: true,
 				RootCAs:            rootCAs,
 				VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
