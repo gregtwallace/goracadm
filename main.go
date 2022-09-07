@@ -8,7 +8,7 @@ import (
 	"github.com/gregtwallace/goracadm/idrac"
 )
 
-const version = "0.1.1"
+const version = "0.1.2"
 
 func main() {
 	log.Printf("goracadm v.%s", version)
