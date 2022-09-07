@@ -108,7 +108,7 @@ func (rac *idrac) executePayload(payload execPayload) (execResp execResponse, er
 	}
 
 	// success - write command output
-	log.Println(execResp.Response.CommandOutput)
+	log.Printf("exec command output: %s", execResp.Response.CommandOutput)
 
 	return execResp, nil
 }
