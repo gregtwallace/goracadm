@@ -33,9 +33,9 @@ func (rc *ReturnCode) meaning() string {
 		return "ok"
 
 	case RcIdrac6InvalidUserPassword:
-		return "idrac6 login failed: invalid username or password"
+		return "login failed: invalid username or password"
 	case RcIdrac7InvalidUserPassword:
-		return "idrac7 login failed: invalid username or password"
+		return "login failed: invalid username or password"
 
 	default:
 		// break for unknown
