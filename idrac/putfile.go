@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -71,6 +72,11 @@ func (rac *idrac) putfile(payload putfilePayload) (err error) {
 		return err
 	}
 	defer resp.Body.Close()
+
+	// read entire body (to keep single tls connection open and avoid redundant cert
+	// log messages) see: https://stackoverflow.com/questions/17948827/reusing-http-connections-in-go
+	// for explanation
+	_, _ = io.Copy(io.Discard, resp.Body)
 
 	// check status code 200 (OK)
 	if resp.StatusCode != http.StatusOK {
