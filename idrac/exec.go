@@ -102,8 +102,9 @@ func (rac *idrac) executePayload(payload execPayload) (execResp execResponse, er
 	if execResp.Response.ReturnCode != RcOK {
 		return execResponse{}, execResp.Response.ReturnCode
 	}
+	// return command output as error if command errored
 	if execResp.Response.CommandReturnCode != RcOK {
-		return execResponse{}, execResp.Response.CommandReturnCode
+		return execResponse{}, errors.New(execResp.Response.CommandOutput)
 	}
 
 	// success - write command output
