@@ -31,10 +31,13 @@ func main() {
 	flag.Parse()
 
 	// make idrac
-	rac := idrac.NewIdrac(hostname, username, password, strictCerts)
+	rac, err := idrac.NewIdrac(hostname, username, password, strictCerts)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// do discover (confirm hostname is actually an idrac)
-	_, err := rac.Discover()
+	_, err = rac.Discover()
 	if err != nil {
 		log.Fatal(err)
 	}
