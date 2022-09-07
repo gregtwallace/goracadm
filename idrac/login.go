@@ -49,6 +49,7 @@ func (rac *idrac) Login() (loginResp LoginResponse, err error) {
 	if err != nil {
 		return LoginResponse{}, err
 	}
+	defer resp.Body.Close()
 
 	// read and unmarshal body
 	body, err := io.ReadAll(resp.Body)

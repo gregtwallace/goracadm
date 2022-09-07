@@ -23,6 +23,7 @@ func (rac *idrac) Logout() (logoutResp LogoutResponse, err error) {
 	if err != nil {
 		return LogoutResponse{}, err
 	}
+	defer resp.Body.Close()
 
 	// read and unmarshal body
 	body, err := io.ReadAll(resp.Body)

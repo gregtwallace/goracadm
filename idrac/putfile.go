@@ -70,6 +70,7 @@ func (rac *idrac) putfile(payload putfilePayload) (err error) {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	// check status code 200 (OK)
 	if resp.StatusCode != http.StatusOK {

@@ -30,6 +30,7 @@ func (rac *idrac) Discover() (discResp DiscoverResponse, err error) {
 	if err != nil {
 		return DiscoverResponse{}, err
 	}
+	defer resp.Body.Close()
 
 	// read body
 	body, err := io.ReadAll(resp.Body)

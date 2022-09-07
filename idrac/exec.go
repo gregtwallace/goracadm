@@ -85,6 +85,7 @@ func (rac *idrac) executePayload(payload execPayload) (execResp execResponse, er
 	if err != nil {
 		return execResponse{}, err
 	}
+	defer resp.Body.Close()
 
 	// read and unmarshal body
 	body, err := io.ReadAll(resp.Body)
