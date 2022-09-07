@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"time"
-
-	"github.com/fcjr/aia-transport-go"
 )
 
 // idracClient is a custom http.Client designed to interface
@@ -30,7 +28,7 @@ func newIdracClient(strictCerts bool) (client *idracClient, err error) {
 		// make transport with AIA support (many (all?) idracs do not
 		// supply intermediate cert and linux does not perform AIA by
 		// default)
-		transport, err = aia.NewTransport()
+		transport, err = NewTransport()
 		if err != nil {
 			return nil, err
 		}
