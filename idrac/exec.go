@@ -52,6 +52,8 @@ func (rac *idrac) Exec(command string, flags []string) (execResp execResponse, e
 	switch command {
 	case "racreset":
 		execResp, err = rac.racreset(flags)
+	case "racresetcfg":
+		execResp, err = rac.racresetcfg(flags)
 	case "sslcertdownload":
 		execResp, err = rac.sslcertdownload(flags)
 	case "sslcertupload":
