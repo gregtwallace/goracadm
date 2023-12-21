@@ -15,11 +15,11 @@ import (
 // https://www.dell.com/support/manuals/en-us/idrac9-lifecycle-controller-v5.x-series/idrac9_5.xx_racadm_pub/sslcertupload?guid=guid-4c93d9c0-ec1f-42a3-b746-67d980819ba7&lang=en-us
 func (rac *idrac) sslcertupload(flags []string) (execResp execResponse, err error) {
 	// parse command flags (options)
-	filename := ""
+	file := ""
 	certType := 0
 
 	fs := flag.NewFlagSet("sslcertupload", flag.ExitOnError)
-	fs.StringVar(&filename, "f", "", "local filename to upload (required)")
+	fs.StringVar(&file, "f", "", "local filename to upload or pem string of cert (required)")
 	fs.IntVar(&certType, "t", 0, "certificate type (required - int - see Dell docs)")
 
 	// parse and check for basic errors
@@ -31,34 +31,40 @@ func (rac *idrac) sslcertupload(flags []string) (execResp execResponse, err erro
 	}
 
 	// validate command flags
-	if filename == "" {
+	if file == "" {
 		return execResponse{}, errors.New("filename (-f) must be specified")
 	}
 	if (certType < 1 || certType == 5 || certType > 10) && certType != 16 {
 		return execResponse{}, errors.New("cert type must be between 1 and 4, 6 and 10, or 16")
 	}
 
-	// open specified file
-	cert, err := os.ReadFile(filename)
-	if err != nil {
-		return execResponse{}, err
+	// MODIFIED BEHAVIOR FROM racadm, though still fully compliant with spec
+	// try to parse file as pem content
+	pemBlock, _ := pem.Decode([]byte(file))
+	if pemBlock != nil {
+		// file input is valid pem string (as opposed to file name)
+		// no-op
+	} else {
+		// if failed to parse file as pem content, do normal behavior of trying to open the filename and read it
+		keyFileBytes, err := os.ReadFile(file)
+		if err != nil {
+			return execResponse{}, err
+		}
+
+		// confirm file content is valid pem (discards any "extra" content after key block)
+		pemBlock, _ = pem.Decode(keyFileBytes)
+		if pemBlock == nil || pemBlock.Type != "CERTIFICATE" {
+			return execResponse{}, errors.New("file is not a pem encoded certificate")
+		}
 	}
 
-	// very basic pem check
 	// TODO: maybe verify rest of pem chain
-	// This is already doing more than racadm which will allow the upload
-	// of ANY file, it seems.
-	block, _ := pem.Decode(cert)
-	if block == nil || block.Type != "CERTIFICATE" {
-		return execResponse{}, errors.New("file is not a pem encoded certificate")
-	}
-	// validation done
 
 	// file put payload
 	filePayload := putfilePayload{
 		filename: "RACSSLCERT1",
 		flags:    0,
-		content:  cert,
+		content:  pem.EncodeToMemory(pemBlock),
 	}
 
 	// put the file on the rac
