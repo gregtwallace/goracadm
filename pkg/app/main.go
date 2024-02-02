@@ -1,16 +1,16 @@
-package main
+package app
 
 import (
 	"flag"
 	"log"
 	"os"
 
-	"github.com/gregtwallace/goracadm/idrac"
+	"github.com/gregtwallace/goracadm/pkg/idrac"
 )
 
 const version = "0.1.4"
 
-func main() {
+func Start() {
 	log.Printf("goracadm v.%s", version)
 
 	// exit code

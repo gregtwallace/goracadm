@@ -1,14 +1,5 @@
-# notes to self
-notes/
+# contains local info used for development like notes and packet captures
+_devwork/
 
-# testing scripts
-r*.ps1
-
-# testing products
-*.pem
-
-# packet captures used to build the tool
-packet_captures/
-
-# build output
-out/
+# output for testing
+_out/
