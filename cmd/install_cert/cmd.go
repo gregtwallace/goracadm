@@ -53,18 +53,21 @@ func (app *app) cmdInstallCertAndReset(_ context.Context, args []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to upload key (%w)", err)
 	}
+	app.stdLogger.Println("sslkeyupload: key uploaded")
 
 	// sslcertupload
 	_, err = rac.Exec("sslcertupload", []string{"-t", "1", "-f", string(certPem)})
 	if err != nil {
 		return fmt.Errorf("failed to upload cert (%w)", err)
 	}
+	app.stdLogger.Println("sslcertupload: cert uploaded")
 
 	// racreset
 	_, err = rac.Exec("racreset", nil)
 	if err != nil {
 		return fmt.Errorf("failed to reset (%w)", err)
 	}
+	app.stdLogger.Println("racreset: idrac reset")
 
 	// logout of the idrac
 	_, _ = rac.Logout()

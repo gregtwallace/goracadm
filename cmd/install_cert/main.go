@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"io"
 	"log"
 	"os"
 
@@ -14,11 +13,10 @@ import (
 
 // struct for receivers to use common app pieces
 type app struct {
-	stdLogger   *log.Logger
-	debugLogger *log.Logger
-	errLogger   *log.Logger
-	cmd         *ff.Command
-	config      *config
+	stdLogger *log.Logger
+	errLogger *log.Logger
+	cmd       *ff.Command
+	config    *config
 }
 
 // a binary that accepts args or environment variables and executes the
@@ -27,9 +25,8 @@ type app struct {
 func main() {
 	// make app w/ logger
 	app := &app{
-		stdLogger:   log.New(os.Stdout, "", 0),
-		debugLogger: log.New(io.Discard, "", 0), // discard debug logging by default
-		errLogger:   log.New(os.Stderr, "", 0),
+		stdLogger: log.New(os.Stdout, "", 0),
+		errLogger: log.New(os.Stderr, "", 0),
 	}
 
 	// log start
@@ -37,11 +34,6 @@ func main() {
 
 	// get & parse config
 	err := app.getConfig()
-
-	// if debug logging, make real debug logger
-	if app.config.debugLogging != nil && *app.config.debugLogging {
-		app.debugLogger = log.New(os.Stdout, "debug: ", 0)
-	}
 
 	// deal with config err (after logger re-init)
 	if err != nil {

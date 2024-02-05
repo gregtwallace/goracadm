@@ -29,8 +29,7 @@ type config struct {
 	username *string
 	password *string
 	keyCertPemCfg
-	insecure     *bool
-	debugLogging *bool
+	insecure *bool
 }
 
 // getConfig returns the app's configuration from either command line args,
@@ -50,7 +49,6 @@ func (app *app) getConfig() error {
 	cfg.keyPem = rootFlags.StringLong("keypem", "", "string of the rsa-2048 key in pem format")
 	cfg.certPem = rootFlags.StringLong("certpem", "", "string of the certificate in pem format")
 	cfg.insecure = rootFlags.BoolLong("insecure", "disable https certificate validation (DANGEROUS)")
-	cfg.debugLogging = rootFlags.BoolLong("debug", "set this flag to enable additional debug logging messages")
 
 	rootCmd := &ff.Command{
 		Name:      "goracadm-cert",
