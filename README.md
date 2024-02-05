@@ -56,4 +56,4 @@ install binary, with environment variables, to directly upload new
 certificates as they're issued by LeGo, without having to write a 
 separate script.
 
-![LeGo CertHub with GoRacAdm Cert](https://raw.githubusercontent.com/gregtwallace/goracadm/main/img/goracadm-cert.png)
+![LeGo CertHub with GoRacAdm Cert](https://raw.githubusercontent.com/gregtwallace/goracadm/master/img/goracadm-cert.png)
