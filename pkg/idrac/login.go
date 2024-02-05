@@ -32,7 +32,7 @@ type LoginResponse struct {
 	}
 }
 
-// login logs into the idrac
+// login logs into the idrac and saves the login cookie (`sid`)
 func (rac *idrac) Login() (loginResp LoginResponse, err error) {
 	// make login payload and marshal it
 	payload := loginPayload{}

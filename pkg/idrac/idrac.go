@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+const Version = "0.2.0"
+
 // idrac contains details about a specific idrac
 type idrac struct {
 	hostname string
