@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/gregtwallace/goracadm/pkg/idrac"
@@ -14,6 +15,17 @@ func (app *app) cmdInstallCertAndReset(_ context.Context, args []string) error {
 	// extra args == error
 	if len(args) != 0 {
 		return fmt.Errorf("main: failed, %w (%d)", ErrExtraArgs, len(args))
+	}
+
+	// must have hostname, username, and password
+	if app.config.hostname == nil || *app.config.hostname == "" {
+		return errors.New("main: hostname must be specified")
+	}
+	if app.config.username == nil || *app.config.username == "" {
+		return errors.New("main: username must be specified")
+	}
+	if app.config.password == nil || *app.config.password == "" {
+		return errors.New("main: hostname must be specified")
 	}
 
 	// load key and cert
