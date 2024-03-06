@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-const Version = "0.3.0"
+const Version = "0.3.1"
 
 // idrac contains details about a specific idrac
 type idrac struct {
