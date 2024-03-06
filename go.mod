@@ -1,6 +1,6 @@
 module github.com/gregtwallace/goracadm
 
-go 1.19
+go 1.22.1
 
 replace github.com/gregtwallace/goracadm/cmd/goracadm-cert => /pkg/cmd/goracadm-cert
 
